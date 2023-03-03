@@ -221,19 +221,7 @@ def pregunta_10():
     sorted_c1_c2_r = sorted_c1_c2.reset_index()
     del sorted_c1_c2_r ["index"]
 
-    c_1_t = sorted_c1_c2_r["_c1"]
-    c_2_t = sorted_c1_c2_r["_c2"]
-    c_2_t = list(c_2_t)
-    c_2_t = pd.DataFrame(c_2_t)
-    c1_c2_list = pd.concat(
-        [
-              c_1_t,
-              c_2_t,
-        ],
-        axis = 1,
-    )
-    c1_c2_list.rename(columns={c1_c2_list.columns[1]: '_c2'},inplace=True)
-    return c1_c2_list
+    return sorted_c1_c2_r
 
 
 def pregunta_11():
