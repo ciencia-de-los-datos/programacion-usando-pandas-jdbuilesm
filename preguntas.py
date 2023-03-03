@@ -220,6 +220,9 @@ def pregunta_10():
     sorted_c1_c2 = tbl0_c1_c2.sort_values(by=['_c1'], ascending=True)
     sorted_c1_c2_r = sorted_c1_c2.reset_index()
     del sorted_c1_c2_r ["index"]
+    sorted_c1_c2_r["_c2"] = list(sorted_c1_c2_r["_c2"])
+    sorted_c1_c2_r["_c2"]
+    sorted_c1_c2_r = sorted_c1_c2_r.set_index('_c1')
 
     return sorted_c1_c2_r
 
