@@ -7,6 +7,7 @@ Este archivo contiene las preguntas que se van a realizar en el laboratorio.
 Utilice los archivos `tbl0.tsv`, `tbl1.tsv` y `tbl2.tsv`, para resolver las preguntas.
 
 """
+import numpy as np
 import pandas as pd
 
 tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
@@ -22,7 +23,8 @@ def pregunta_01():
     40
 
     """
-    return
+    filas_0 = len(tbl0)
+    return filas_0
 
 
 def pregunta_02():
@@ -33,7 +35,8 @@ def pregunta_02():
     4
 
     """
-    return
+    colum_0 = (tbl0.shape[1])
+    return colum_0
 
 
 def pregunta_03():
@@ -50,7 +53,9 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    return
+    count_sorted=(tbl0["_c1"].value_counts(ascending=True))
+    sorted_rdy = count_sorted.sort_index()
+    return sorted_rdy
 
 
 def pregunta_04():
@@ -65,7 +70,8 @@ def pregunta_04():
     E    4.785714
     Name: _c2, dtype: float64
     """
-    return
+    media_c2_c1 = tbl0.groupby("_c1")["_c2"].mean()
+    return media_c2_c1
 
 
 def pregunta_05():
@@ -82,7 +88,9 @@ def pregunta_05():
     E    9
     Name: _c2, dtype: int64
     """
-    return
+    max_c2_c1 = tbl0.groupby("_c1")["_c2"].max()
+
+    return max_c2_c1
 
 
 def pregunta_06():
@@ -94,7 +102,10 @@ def pregunta_06():
     ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
     """
-    return
+    tbl1['_c4'] = tbl1['_c4'].str.upper()
+    list_c4=list(tbl1._c4.unique())
+    list_c4 = sorted(list_c4)
+    return list_c4
 
 
 def pregunta_07():
@@ -110,7 +121,9 @@ def pregunta_07():
     E    67
     Name: _c2, dtype: int64
     """
-    return
+    sum_c2_c1 = tbl0.groupby("_c1")["_c2"].sum()
+
+    return sum_c2_c1
 
 
 def pregunta_08():
@@ -128,7 +141,20 @@ def pregunta_08():
     39   39   E    5  1998-01-26    44
 
     """
-    return
+    suma = tbl0["_c0"] + tbl0["_c2"]
+    
+    data_full = pd.concat(
+        [
+            tbl0,
+            suma,
+        ],
+        axis = 1,
+    )
+    data_full.rename(columns={data_full.columns[4]: 'suma'},inplace=True)
+    data_full
+    
+    
+    return data_full
 
 
 def pregunta_09():
@@ -146,7 +172,21 @@ def pregunta_09():
     39   39   E    5  1998-01-26  1998
 
     """
-    return
+    year = tbl0["_c3"]
+    year_t = []
+    for item in year:
+        year_t.append(item[0:4])
+    year_t = pd.DataFrame(year_t)
+    date_full = pd.concat(
+        [
+              tbl0,
+            year_t,
+        ],
+        axis = 1,
+    )
+    date_full.rename(columns={date_full.columns[4]: 'year'},inplace=True)
+  
+    return date_full
 
 
 def pregunta_10():
@@ -155,15 +195,36 @@ def pregunta_10():
     la columna _c2 para el archivo `tbl0.tsv`.
 
     Rta/
-                                   _c1
-      _c0
+                                   _c2
+      _c1
     0   A              1:1:2:3:6:7:8:9
     1   B                1:3:4:5:6:8:9
     2   C                    0:5:6:7:9
     3   D                  1:2:3:5:5:7
     4   E  1:1:2:3:3:4:5:5:5:6:7:8:8:9
     """
-    return
+    tbl0_c1 = tbl0["_c1"]
+    tbl0_c2 = tbl0["_c2"]
+    tbl0_c1_c2 = pd.concat(
+        [
+            tbl0_c1,
+            tbl0_c2,
+        ],
+        axis = 1,
+    )
+
+    tbl0_c1_c2['_c2'] = tbl0_c1_c2['_c2'].apply(str)
+
+    tbl0_c1_c2['_c2'] = tbl0_c1_c2[['_c1','_c2']].groupby(['_c1'])['_c2'].transform(lambda x: ':'.join(sorted(x)))
+    tbl0_c1_c2 = tbl0_c1_c2[['_c1','_c2']].drop_duplicates()
+    sorted_c1_c2 = tbl0_c1_c2.sort_values(by=['_c1'], ascending=True)
+    sorted_c1_c2_r = sorted_c1_c2.reset_index()
+    del sorted_c1_c2_r ["index"]
+    sorted_c1_c2_r["_c2"] = list(sorted_c1_c2_r["_c2"])
+    sorted_c1_c2_r["_c2"]
+    sorted_c1_c2_r = sorted_c1_c2_r.set_index('_c1')
+
+    return sorted_c1_c2_r
 
 
 def pregunta_11():
@@ -182,7 +243,25 @@ def pregunta_11():
     38   38      d,e
     39   39    a,d,f
     """
-    return
+    tbl1_c0 = tbl1["_c0"]
+    tbl1_c4 = tbl1["_c4"]
+    tbl1_c0_c4 = pd.concat(
+        [
+            tbl1_c0,
+            tbl1_c4,
+        ],
+        axis = 1,
+    )
+
+    tbl1_c0_c4['_c4'] = tbl1_c0_c4['_c4'].apply(str)
+
+    tbl1_c0_c4['_c4'] = tbl1_c0_c4[['_c0','_c4']].groupby(['_c0'])['_c4'].transform(lambda x: ','.join(sorted(x)))
+    tbl1_c0_c4 = tbl1_c0_c4[['_c0','_c4']].drop_duplicates()
+    sorted_c0_c4 = tbl1_c0_c4.sort_values(by=['_c0'], ascending=True)
+    sorted_c0_c4_r = sorted_c0_c4.reset_index()
+    del sorted_c0_c4_r ["index"]
+    
+    return sorted_c0_c4_r
 
 
 def pregunta_12():
@@ -200,7 +279,28 @@ def pregunta_12():
     38   38                    eee:0,fff:9,iii:2
     39   39                    ggg:3,hhh:8,jjj:5
     """
-    return
+    tbl2_c0 = tbl2["_c0"]
+    tbl2_c5a = tbl2["_c5a"]
+    tbl2_c5b = tbl2["_c5b"]
+    tbl2["_c5"] = tbl2["_c5a"].astype(str) + ":" + tbl2["_c5b"].astype(str)
+    tbl2_c5 = tbl2["_c5"]
+    tbl2_c0_c5 = pd.concat(
+        [
+            tbl2_c0,
+            tbl2_c5,
+        ],
+        axis = 1,
+    )
+    tbl2_c0_c5
+    tbl2_c0_c5['_c5'] = tbl2_c0_c5['_c5'].apply(str)
+
+    tbl2_c0_c5['_c5'] = tbl2_c0_c5[['_c0','_c5']].groupby(['_c0'])['_c5'].transform(lambda x: ','.join(sorted(x)))
+    tbl2_c0_c5 = tbl2_c0_c5[['_c0','_c5']].drop_duplicates()
+    sorted_c0_c5 = tbl2_c0_c5.sort_values(by=['_c0'], ascending=True)
+    sorted_c0_c5_r = sorted_c0_c5.reset_index()
+    del sorted_c0_c5_r ["index"]
+
+    return sorted_c0_c5_r
 
 
 def pregunta_13():
@@ -217,4 +317,36 @@ def pregunta_13():
     E    275
     Name: _c5b, dtype: int64
     """
-    return
+    tbl2_c0 = tbl2["_c0"]
+    tbl2_c5b = tbl2["_c5b"]
+    tbl2_c0_c5b = pd.concat(
+        [
+            tbl2_c0,
+            tbl2_c5b,
+        ],
+        axis = 1,
+    )
+    tbl2_c0_c5b
+    tbl2_c0_c5b['_c5b'] = tbl2_c0_c5b['_c5b'].apply(str)
+
+    tbl2_c0_c5b['_c5b'] = tbl2_c0_c5b[['_c0','_c5b']].groupby(['_c0'])['_c5b'].transform(lambda x: ','.join(sorted(x)))
+    tbl2_c0_c5b = tbl2_c0_c5b[['_c0','_c5b']].drop_duplicates()
+    sorted_c0_c5b = tbl2_c0_c5b.sort_values(by=['_c0'], ascending=True)
+    sorted_c0_c5b_r = sorted_c0_c5b.reset_index()
+    del sorted_c0_c5b_r ["index"]
+
+    col_5 = sorted_c0_c5b_r["_c5b"]
+    col_5 = col_5.str.split(',', expand=True)
+    col_5 = col_5.replace(np.nan, 0)
+
+    col_5 = col_5.astype('int')
+
+    col_5t = col_5[0] + col_5[1] + col_5[2] + col_5[3] + col_5[4]+ col_5[5]
+
+    col_5t
+
+
+    tbl0["_c5b"] = col_5t
+    sum_c2_c1 = tbl0.groupby("_c1")["_c5b"].sum()
+    
+    return sum_c2_c1
